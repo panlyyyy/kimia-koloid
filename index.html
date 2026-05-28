@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Latihan ASAT Kimia (Sistem Koloid) - SMA Sedes Sapientiae</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true
+            },
+            options: {
+                skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
+        }
+        
+        /* Custom Scrollbar */
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; height: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 10px; }
+        
+        /* Animations */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        .glass-header { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        
+        /* FIX UTAMA: WORD WRAPPING & LAYOUT MOBILE */
+        .option-card {
+            white-space: normal !important;
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            word-break: break-word !important;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            width: 100%;
+        }        
+        .option-text {
+            flex: 1;
+            min-width: 0; /* Crucial for flex text wrapping */
+            line-height: 1.6;
+            word-break: break-word;
+            overflow-wrap: anywhere;
+        }
+        
+        .nav-unanswered { background: white; border-color: #f1f5f9; color: #cbd5e1; }
+        .nav-answered { background: #4f46e5; border-color: #4f46e5; color: white; }
+        .nav-doubt-only { background: white; border-color: #f59e0b; color: #f59e0b; }
+        .nav-answered-doubt { background: #4f46e5; border-color: #f59e0b; color: white; border-width: 3px; }
+        
+        #overlay.active { opacity: 1; pointer-events: auto; backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        mjx-container { font-size: 1.1em !important; }
+        
+        /* Mobile Height Fix */
+        @supports (-webkit-touch-callout: none) {
+            .min-h-screen { min-height: -webkit-fill-available; }
+        }
+    </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-900 overflow-hidden h-screen flex flex-col relative">
+
+    <!-- Watermark -->
+    <div class="fixed inset-0 flex items-center justify-center opacity-[0.03] text-slate-900 pointer-events-none select-none z-0 text-center font-black tracking-widest text-4xl sm:text-7xl md:text-8xl rotate-[-20deg]">
+        KIMIA KOLOID SEDES XI
+    </div>
+
+    <!-- Loader -->
+    <div id="loader" class="fixed inset-0 z-[100] bg-white flex flex-col items-center justify-center transition-opacity duration-500">
+        <div class="w-10 h-10 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin"></div>
+        <p class="mt-4 text-slate-400 text-xs font-bold uppercase tracking-widest">Memuat & Mengacak Soal...</p>
+    </div>
+
+    <!-- Header -->
+    <header class="glass-header sticky top-0 z-50 h-16 border-b border-slate-200 flex items-center justify-between px-4 lg:px-10 shrink-0 relative">
+        <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-gradient-to-tr from-indigo-600 to-violet-600 rounded-xl flex items-center justify-center text-white shadow-lg">
+                <i data-lucide="beaker" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h1 class="font-extrabold text-xs sm:text-sm tracking-tight text-slate-800 uppercase leading-none">ASAT KIMIA (KOLOID) XI</h1>
+                <p class="text-[9px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-wider mt-1">Sedes Sapientiae - KELAS XI</p>
+            </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+            <div id="timer-box" class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 rounded-full border border-slate-200 font-mono font-bold text-xs text-slate-700 shadow-sm">                <i data-lucide="clock" class="w-3.5 h-3.5 text-indigo-500"></i>
+                <span id="timer-display">01:30:00</span>
+            </div>
+            <button onclick="toggleSidebar()" class="lg:hidden p-2 bg-white border border-slate-200 rounded-xl text-slate-600 shadow-sm">
+                <i data-lucide="layout-grid" class="w-5 h-5"></i>
+            </button>
+        </div>
+    </header>
+
+    <div class="flex flex-1 overflow-hidden relative z-10">
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-10 relative" style="height: calc(100vh - 64px);">
+            <div class="max-w-3xl mx-auto space-y-6 pb-24">
+                <div id="question-card" class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="h-1.5 w-full bg-slate-100">
+                        <div id="top-progress" class="h-full bg-indigo-600 transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                    
+                    <div class="px-6 py-4 border-b border-slate-50 flex items-center justify-between">
+                        <span id="q-number-tag" class="px-3 py-1 bg-indigo-50 text-indigo-700 rounded-lg text-[10px] font-black uppercase tracking-wider">SOAL 1</span>
+                        <div class="flex items-center gap-2">
+                            <span id="correction-badge" class="hidden px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider"></span>
+                            <button onclick="toggleDoubt()" id="btn-doubt" class="flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all border border-slate-200 text-slate-400">
+                                <i data-lucide="flag" class="w-3.5 h-3.5"></i>
+                                <span id="doubt-text">RAGU-RAGU</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="content-area" class="p-6 lg:p-8 space-y-6 animate-fade-in">
+                        <h2 id="q-text" class="text-base lg:text-lg font-bold text-slate-800 leading-relaxed whitespace-pre-wrap break-words w-full"></h2>
+                        
+                        <div id="q-code-container" class="hidden">
+                            <pre class="p-4 bg-slate-900 text-slate-100 rounded-2xl text-[11px] sm:text-xs overflow-x-auto font-mono border border-slate-800 whitespace-pre-wrap break-all"><code id="q-code"></code></pre>
+                        </div>
+
+                        <div id="q-sub" class="hidden p-4 bg-indigo-50/50 rounded-xl border-l-4 border-indigo-500">
+                            <p class="text-indigo-900 font-semibold italic text-sm whitespace-pre-wrap break-words w-full"></p>
+                        </div>
+
+                        <div id="options-grid" class="grid gap-3 w-full"></div>
+                    </div>
+
+                    <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between sticky bottom-0 z-10">
+                        <button onclick="prevQ()" id="btn-prev" class="flex items-center gap-1 px-4 py-2 rounded-xl text-[10px] font-black text-slate-400 disabled:opacity-30 uppercase tracking-widest">
+                            <i data-lucide="chevron-left" class="w-4 h-4"></i> Kembali
+                        </button>
+                        <div class="flex gap-2">
+                            <button onclick="nextQ()" id="btn-next" class="flex items-center gap-2 px-6 py-2.5 bg-slate-900 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                Lanjut <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>                            <button onclick="finishExam()" id="btn-finish" class="hidden flex items-center gap-2 px-6 py-2.5 bg-emerald-600 text-white rounded-xl text-[10px] font-black uppercase tracking-widest shadow-lg">
+                                Selesai <i data-lucide="send" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <aside id="sidebar" class="fixed inset-y-0 right-0 lg:relative translate-x-full lg:translate-x-0 w-72 bg-white border-l border-slate-200 transition-transform duration-300 z-[70] flex flex-col shadow-2xl lg:shadow-none">
+            <div class="p-5 border-b border-slate-100 flex justify-between items-center">
+                <h3 class="font-extrabold text-xs text-slate-800 uppercase tracking-widest">Navigasi Soal</h3>
+                <button onclick="toggleSidebar()" class="lg:hidden text-slate-400 p-1"><i data-lucide="x" class="w-5 h-5"></i></button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-4 custom-scrollbar bg-slate-50/30">
+                <div id="grid-nav" class="grid grid-cols-5 gap-2"></div>
+            </div>
+            <div class="p-5 bg-white border-t border-slate-200">
+                <button id="main-submit-btn" onclick="finishExam()" class="w-full py-3.5 bg-indigo-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-lg flex items-center justify-center gap-2">
+                    Kumpulkan <i data-lucide="check-circle" class="w-3.5 h-3.5"></i>
+                </button>
+            </div>
+        </aside>
+
+        <div id="overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 z-[60] opacity-0 pointer-events-none transition-all duration-300 lg:hidden"></div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="modal-result" class="fixed inset-0 z-[200] hidden flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="bg-white rounded-[32px] shadow-2xl w-full max-w-sm overflow-hidden transform animate-fade-in text-center">
+            <div class="bg-indigo-600 p-8 text-white">
+                <h2 class="text-lg font-bold">Hasil Akhir</h2>
+                <div id="final-score" class="text-7xl font-black my-2">0</div>
+                <p class="text-[10px] font-bold uppercase tracking-widest opacity-70">Skor Kompetensi</p>
+                <p id="final-summary" class="text-xs mt-2 opacity-90 font-medium"></p>
+            </div>
+            <div class="p-6 space-y-3 bg-slate-50">
+                <button onclick="closeResult()" class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold text-[10px] uppercase tracking-widest shadow-md">Lihat Koreksi</button>
+                <button onclick="location.reload()" class="w-full py-3 bg-white text-slate-600 border border-slate-200 rounded-xl font-bold text-[10px] uppercase tracking-widest">Ulangi Sesi</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const MASTER_DATA = [
+            { id: 1, question: "Koloid yang mempunyai fase terdispersi padat dan fase pendispersi cair disebut.......", options: ["emulsi", "sol", "aerosol", "buih", "emulsi padat"], answer: "B" },
+            { id: 2, question: "Pernyataan yang tidak benar tentang koloid adalah.......", options: ["merupakan campuran heterogen", "punya ukuran partikel 10⁻⁷ cm – 10⁻⁵ cm", "dapat disaring melalui membran", "bersifat tidak stabil", "terdiri dari 2 fase"], answer: "D" },
+            { id: 3, question: "Larutan berikut yang menunjukkan efek Tyndall adalah.......", options: ["larutan CuSO₄ jenuh", "larutan K₂CrO₄", "larutan FeCl₃ jenuh", "larutan I₂ dalam KI", "larutan jenuh kalsium asetat dalam alkohol"], answer: "E" },
+            { id: 4, question: "Berikut beberapa cara pembuatan koloid:\n1. mengalirkan udara dalam larutan H₂S\n2. menggiling serbuk belerang dan dicampur dalam medium\n3. menambah HCl pada larutan Na₂S₂O₃\n4. menambah larutan AlCl₃ ke dalam endapan Al(OH)₃\nPembuatan koloid dengan cara dispersi adalah.......", options: ["1, 2, 3", "1, 3", "2, 4", "4", "1, 2, 3, 4"], answer: "C" },
+            { id: 5, question: "Minyak dan air dapat bercampur baik jika dikocok dengan air sabun. Hal ini disebabkan.....", options: ["sabun menurunkan tegangan permukaan", "molekul sabun memiliki bagian yang polar dan nonpolar", "massa jenis minyak dan air dibuat serupa oleh sabun", "buih sabun mengandung udara yang mencegah memisahnya minyak", "sabun memiliki daya pembersih sangat kuat"], answer: "B" },
+            { id: 6, question: "Sifat adsorpsi koloid tidak dapat dimanfaatkan dalam hal.......", options: ["pengolahan karet dari lateks", "pemurnian gula", "pemakaian deodorant", "pengobatan sakit perut dengan norit", "pencelupan serat wol, kapas, sutera"], answer: "A" },
+            { id: 7, question: "Zat berikut yang membentuk koloid hidrofob jika didispersikan dalam air adalah.......", options: ["susu", "gelatin", "belerang", "amilum", "agar-agar"], answer: "C" },
+            { id: 8, question: "Yang berfungsi sebagai koloid pelindung adalah.......", options: ["batu tahu pada pembuatan tahu", "asam formiat pada pengolahan karet", "air panas pada pembuatan sol Fe(OH)₃", "air sabun pada pencampuran minyak dan air", "alkohol pada pembuatan gel dari larutan jenuh Ca-asetat"], answer: "D" },
+            { id: 9, question: "Partikel koloid dalam medium air yang bermuatan positif adalah.......", options: ["kanji", "lumpur", "asam silikat", "As₂S₃", "Al(OH)₃"], answer: "E" },
+            { id: 10, question: "Sifat koagulasi koloid terdapat dalam.......", options: ["warna langit yang berwarna pada senja hari", "proses cuci darah untuk pasien gagal ginjal", "menghilangkan bau badan dengan deodorant", "pembuatan tahu dari air kedelai dengan batu tahu", "penyembuhan sakit perut dengan norit"], answer: "D" },
+            { id: 11, question: "Jika suatu zat didispersikan dalam air maka akan membentuk koloid. Zat tersebut adalah.........", options: ["urea", "gula", "garam", "agar-agar", "asam sulfat"], answer: "D" },
+            { id: 12, question: "Diantara koloid berikut yang terdispersinya padat dengan medium pendispersi gas adalah.........", options: ["busa sabun", "asap", "kabut", "tinta", "buih air laut"], answer: "B" },
+            { id: 13, question: "Ukuran partikel koloid adalah.........", options: ["lebih besar dari 10⁻⁵ cm", "lebih besar dari 10⁻⁷ cm", "lebih besar dari 10⁻³ cm", "antara 10⁻⁶ cm sampai 10⁻⁴ cm", "antara 10⁻⁷ cm sampai 10⁻⁵ cm"], answer: "E" },
+            { id: 14, question: "Bahan yang bukan sistem koloid adalah.........", options: ["batu apung", "kaca warna", "mutiara", "air sadah", "santan"], answer: "D" },
+            { id: 15, question: "Buih dapat terjadi pada keadaan.........", options: ["cair dalam gas", "gas dalam air", "padat dalam cair", "cair dalam cair", "gas dalam padat"], answer: "B" },
+            { id: 16, question: "Sistem koloid berikut merupakan emulsi, kecuali.........", options: ["alkohol 70%", "minyak ikan", "susu", "santan", "mayonese"], answer: "A" },
+            { id: 17, question: "Dispersi cair dalam padat disebut.........", options: ["aerosol", "emulsi", "emulsi padat", "buih", "sol padat"], answer: "C" },
+            { id: 18, question: "Jenis koloid yang memiliki fase terdispersi gas adalah...", options: ["kabut", "awan", "batu apung", "embun", "asap"], answer: "C" },
+            { id: 19, question: "Mutiara adalah sistem koloid.........", options: ["cair dalam cair", "padat dalam cair", "gas dalam padat", "cair dalam padat", "padat dalam padat"], answer: "D" },
+            { id: 20, question: "Hal-hal berikut merupakan ciri sistem koloid, kecuali...", options: ["satu fase", "stabil", "homogen", "tidak dapat disaring", "menghamburkan cahaya"], answer: "A" },
+            { id: 21, question: "Gerak Brown disebabkan oleh.........", options: ["gaya gravitasi", "muatan partikel koloid", "halus dan ringannya partikel koloid", "gelombang sinar yang terkena partikel koloid", "partikel-partikel koloid yang saling bertumbukan"], answer: "E" },
+            { id: 22, question: "Penghamburan berkas cahaya dalam sistem koloid disebut.........", options: ["efek Tyndall", "gerak Brown", "adsorbsi", "elektroforesis", "dialisis"], answer: "A" },
+            { id: 23, question: "Salah satu pemanfaatan sifat adsorbsi koloid adalah......", options: ["membuat lem plastik", "mengkristalkan cairan tebu menjadi gula pasir", "cairan dan buih sabun mampu mengemulsikan kotoran yang melekat pada pakaian", "menjernihkan air dengan menggunakan tawas", "penyembuhan penyakit tumor dengan sinar inframerah"], answer: "D" },
+            { id: 24, question: "Diantara koloid di bawah ini merupakan contoh koloid hidrofil.........", options: ["karbon dalam cair", "agar-agar dalam air", "iodium dalam cair", "karet dalam air", "AgCl dalam air"], answer: "B" },
+            { id: 25, question: "Peristiwa di bawah ini merupakan dialisis adalah.........", options: ["pembersih darah dalam ginjal", "memisahkan endapan dengan kertas saring", "memutihkan cairan gula tebu menjadi gula pasir", "membersihkan kotoran pada pakaian dengan menggunakan detergen", "penyerapan cairan tanah oleh akar-akar tanaman"], answer: "A" },
+            { id: 26, question: "Peristiwa penyerapan partikel-partikel bermuatan pada permukaan koloid disebut.........", options: ["koagulasi", "elektroforesis", "adsorbsi", "dialisis", "elektrolisis"], answer: "C" },
+            { id: 27, question: "Yang bukan sifat koloid adalah.........", options: ["efek Tyndall", "gerak Brown", "adsorbsi", "hidrolisis", "elektroforesis"], answer: "D" },
+            { id: 28, question: "Dasar proses penjernihan air adalah.........", options: ["prinsip koloid pelindung", "pemecahan koloid", "koagulasi dan adsorpsi", "prinsip penyebaran muatan", "prinsip perbedaan gerakan pengotor"], answer: "C" },
+            { id: 29, question: "Salah satu aplikasi pada proses elektroforesis yang telah dilakukan dalam industri adalah.........", options: ["membersihkan asap buangan pabrik dari partikulat pencemar dengan alat cottrell", "menjernihkan air limbah buangan dalam bak-bak pengolah limbah", "pemanfaatan energi matahari sebagai sumber listrik", "proses sterilisasi dengan menggunakan proses radiasi", "sistem pemanasan uap air dalam ketel-ketel uap"], answer: "A" },
+            { id: 30, question: "As₂S₃ merupakan senyawa koloid liofob yang bermuatan negatif. larutan yang paling baik untuk mengkoagulasi senyawa koloid ini adalah.........", options: ["FeSO₄", "FeCl₃", "K₃PO₄", "MgCl₂", "Ba(NO₃)₂"], answer: "B" },
+            { id: 31, question: "Pembuatan koloid dari partikel kasar dapat dilakukan dengan cara.........", options: ["kondensasi", "dispersi", "dialisis", "oksidasi", "reduksi"], answer: "B" },
+            { id: 32, question: "Pembuatan koloid dengan melarutkan gas dalam larutan termasuk cara.........", options: ["oksidasi", "reduksi", "kondensasi", "dispersi", "koagulasi"], answer: "C" },
+            { id: 33, question: "Partikel koloid yang terbentuk melalui reaksi hidrolisis adalah.........", options: ["AgCl", "Au", "S", "Fe(OH)₃", "Ag"], answer: "D" },
+            { id: 34, question: "Pencampuran larutan kalsium asetat jenuh alkohol merupakan salah satu cara pembentukan koloid melalui:", options: ["redoks", "peptisasi", "hidrolisis", "penggantian pelarut", "dekomposisi rangkap"], answer: "D" },
+            { id: 35, question: "Apabila sabun digunakan untuk bahan pencuci maka sabun mempunyai fungsi sebagai....", options: ["emulgator", "penghidrolisis", "penambah kepolaran air", "dekomposer", "katalisator terjadinya reaksi redoks"], answer: "A" },
+            { id: 36, question: "Pernyataan yang tepat tentang koloid adalah...", options: ["satu fase, stabil, dapat disaring", "satu fase, tidak stabil, dapat disaring", "dua fase, stabil, dapat disaring", "dua fase, tidak stabil, dapat disaring", "dua fase, stabil, tidak dapat disaring"], answer: "E" },
+            { id: 37, question: "Yang BUKAN termasuk koloid adalah..........", options: ["bensin", "susu", "lem kanji", "mentega", "kabut"], answer: "A" },
+            { id: 38, question: "Busa deterjen yang terapung di air merupakan sistem koloid yang masing-masing fasa terdispersi and medium pendispersinya adalah..........", options: ["padat dalam gas", "padat dalam cair", "gas dalam padat", "gas dalam cair", "cair dalam padat"], answer: "D" },
+            { id: 39, question: "Koloid berikut yang fase terdispersinya berupa gas adalah..........", options: ["keju", "awan", "batu apung", "asap", "kabut"], answer: "C" },
+            { id: 40, question: "Hair spray, santan, dan tinta secara berurutan tergolong koloid..........", options: ["aerosol cair, emulsi, dan sol", "aerosol, sol, dan emulsi", "sol, aerosol, dan gel", "aerosol, sol padat, dan emulsi padat", "aerosol cair, aerosol padat, dan emulsi"], answer: "A" },
+            { id: 41, question: "Ketika pagi hari berkabut, sinar matahari menembus sela-sela pepohonan sehingga terlihat jelas garis-garis sinarnya yang lurus. Peristiwa ini disebut..........", options: ["elektroforesis", "dialisis", "adsorpsi", "efek Tyndall", "gerak Brown"], answer: "D" },
+            { id: 42, question: "Sistem koloid yang fase terdispersinya adalah zat padat dalam gas adalah..........", options: ["embun", "busa", "kabut", "asap", "awan"], answer: "D" },
+            { id: 43, question: "Pengertian koloid berdasar ukuran partikelnya:", options: ["diameter partikel medium dispersinya 1-100 nm", "diameter fasa terdispersi dan medium pendispersi antara 1-100 nm", "diameter partikel fasa terdispersi 1-100 nm", "panjang partikel fasa terdispersi dan medium pendispersi antara 1-100 nm", "panjang partikel terdispersi berkisar 1-100 nm"], answer: "C" },
+            { id: 44, question: "Campuran berikut ini yang tidak dapat disebut emulsi adalah..........", options: ["susu", "santan", "mentega", "sirup", "keju"], answer: "D" },
+            { id: 45, question: "Diketahui: 1. jeli 4. spiritus 2. mayonase 5. yogurt 3. alkohol 70%\nSenyawa-senyawa di atas yang merupakan koloid adalah..........", options: ["1, 2, dan 3", "1, 2, dan 4", "1, 2, dan 5", "2, 4, dan 5", "2, 3, dan 4"], answer: "C" },
+            { id: 46, question: "Yang termasuk sistem koloid, dimana fase gas terdispersi dalam padat adalah..........", options: ["asap", "kabut", "karet busa", "awan", "shampoo"], answer: "C" },
+            { id: 47, question: "Yang termasuk peristiwa penghamburan cahaya dalam kehidupan sehari-hari:\n1. sorot lampu malam kabut\n2. sorot lampu neon di ruang tamu\n3. berkas sinar matahari pagi melalui celah sinar\n4. sorot lampu proyektor di gedung bioskop\nNama peristiwa dan yang termasuk peristiwa penghamburan cahaya:", options: ["efek Tyndall: 1, 2, 3, 4", "efek Tyndall: 1, 3, 4", "efek Tyndall: 1, 2, 3", "gerak Brown: 1, 2, 3, 4", "gerak Brown: 1, 3, 4"], answer: "B" },
+            { id: 48, question: "Senyawa berikut yang tidak dapat disebut sebagai emulsi adalah..........", options: ["susu", "santan", "mentega", "sirup", "keju"], answer: "D" },
+            { id: 49, question: "Air sungai yang keruh diambil, kemudian disaring dengan menggunakan kertas saring. Pada kertas saring tertinggal residu. Filtrat berupa cairan agak keruh yang menghamburkan berkas cahaya. Berdasarkan percobaan dapat disimpulkan bahwa air sungai merupakan..........", options: ["koloid", "suspensi dan koloid", "larutan dan koloid", "suspensi", "larutan dan suspensi"], answer: "B" },
+            { id: 50, question: "Pernyataan tentang elektroforesis berikut ini yang tidak benar adalah..........", options: ["elektroforesis dapat menunjukkan bahwa partikel koloid bermuatan", "koloid negatif akan bergerak ke Anoda", "koloid positif akan bergerak ke Anoda", "proses elektroforesis memerlukan arus listrik searah", "elektroforesis dapat digunakan untuk menunjukkan muatan koloid"], answer: "C" },
+            { id: 51, question: "Berikut ini yang termasuk cara dispersi dalam pembuatan koloid adalah..........", options: ["cara mekanik", "peptisasi", "cara busur Bredig", "penggantian pelarut", "peptonisasi"], answer: "A" },
+            { id: 52, question: "Pendangkalan bendungan/pembentukan delta terjadi karena perairan mengandung partikel-partikel koloid bermuatan....... yang mengalami peristiwa....", options: ["negatif, absorpsi", "positif, absorpsi", "positif, elektroforesis", "negatif, koagulasi", "positif, koagulasi"], answer: "D" },
+            { id: 53, question: "Berikut ini:\n1. belerang dan gula direbus kemudian diaduk dengan air\n2. larutan FeCl₃ dilarutkan dalam air mendidih\n3. Ke dalam larutan As₂S₃ dialirkan gas H₂S\n4. Amilum dalam air dipanaskan\nYang termasuk pembuatan koloid dengan cara kondensasi, yaitu..........", options: ["1 dan 2", "1 dan 3", "1 dan 4", "2 dan 3", "2 dan 4"], answer: "D" },
+            { id: 54, question: "Pembuatan koloid dengan menggunakan reaksi redoks adalah..........", options: ["larutan AgNO₃ dicampur HCl", "larutan As₂O₃ dicampur dengan larutan H₂S jenuh", "larutan FeCl₃ jenuh diteteskan ke dalam air mendidih", "larutan Ca(CH₃COO)₂ jenuh dicampur dengan etanol", "gas H₂S dialirkan ke dalam larutan SO₂"], answer: "E" },
+            { id: 55, question: "Pembuatan koloid dengan hidrolisis adalah..........", options: ["H₂S(g) + SO₂(g) → 2H₂O(l) + 3S(s)", "2H₃AsO₃(aq) + 3H₂S(g) → As₂S₃(s) + 6H₂O(l)", "FeCl₃(aq) + H₂O(l) → Fe(OH)₃(s) + 3HCl(aq)", "AgNO₃(aq) + NaCl(aq) → AgCl(s) + NaNO₃(aq)", "2AuCl₃(aq) + HCHO(aq) → 2Au(s) + 6HCl(aq) + 3HCOOH(aq)"], answer: "C" },
+            { id: 56, question: "Untuk mencuci pakaian yang kotor, digunakan sabun. Ditinjau dari sifat dan fungsinya maka sabun sebagai.......... dan..........", options: ["pemutih dan penurun tegangan permukaan air", "pengemulsi dan penurun tegangan permukaan air", "pengemulsi dan menaikkan tegangan air", "pelarut kotoran dan pengemulsi", "pengkoagulasi dan pengemulsi"], answer: "B" },
+            { id: 57, question: "Larutan manakah yang dalam air panas menunjukkan efek Tyndall?", options: ["NaCl 0,1 M", "FeCl₃ 0,1 M", "FeCl₂ 0,1 M", "AgNO₃ 0,1 M", "CuSO₄ 0,1 M"], answer: "B" },
+            { id: 58, question: "Cara pembuatan koloid dengan mengubah suspensi menjadi koloid disebut..........", options: ["dispersi", "hidrolisis", "elektrolisis", "kondensasi", "koagulasi"], answer: "A" },
+            { id: 59, question: "Mayonaise merupakan emulsi.......... dalam.......... yang dapat stabil karena adanya.........", options: ["minyak-air-santan", "air-minyak-susu", "minyak-air-susu", "minyak-air-kuning telur", "air-minyak-kuning telur"], answer: "D" },
+            { id: 60, question: "Dispersi zat cair atau zat padat dalam gas disebut:", options: ["sol", "aerosol", "emulsi", "buih", "suspensi"], answer: "B" },
+            { id: 61, question: "Elektron yang paling efektif untuk mengendapkan sol Fe(OH)₃ adalah larutan..........", options: ["kalium klorida", "barium sulfat", "ammonium klorida", "alumunium sulfat", "ammonium pospat"], answer: "E" },
+            { id: 62, question: "Larutan yang paling efektif mengendapkan sol As₂S₃ dengan konsentrasi sama adalah..........", options: ["NaCl", "Ca(NO₃)₂", "Na₂SO₄", "AlCl₃", "KNO₃"], answer: "D" },
+            { id: 63, question: "Kation yang paling baik untuk mengendapkan kotoran halus pada perairan adalah..........", options: ["Al³⁺", "Na⁺", "Ca²⁺", "Mg²⁺", "H⁺"], answer: "A" },
+            { id: 64, question: "Terjadinya koagulasi pada sistem koloid disebabkan oleh..........", options: ["halusnya ukuran butiran koloid", "penbanahan senyawa elektrolit sistem koloid", "adanya gerak zig zag partikel koloid", "adanya gerakan lurus terus menerus pada partikel-partikel koloid", "penghamburan berkas sinar oleh partikel-partikel koloid"], answer: "B" },
+            { id: 65, question: "Pernyataan yang tepat tentang gerak Brown adalah:", options: ["gerakan partikel koloid yang dapat dilihat dengan mikroskop biasa", "gerakan tumbukan yang tidak seimbang partikel koloid dengan molekul pendispersi", "gerakan tumbukan yang seimbang partikel koloid dengan molekul medium pendispersi", "gerakan medium pendispersi ke segala arah", "partikel-partikel koloid menghamburkan cahaya"], answer: "B" },
+            { id: 66, question: "Suatu partikel koloid dapat bermuatan positif atau negatif. Hal ini terjadi karena..........", options: ["partikelnya mengalami ionisasi", "zat pendispersinya bermuatan", "partikel koloid termasuk senyawa ion", "partikel koloid mengadsorpsi ion-ion", "partikel koloid mengadsorpsi ion-ion"], answer: "D" },
+            { id: 67, question: "Prinsip kerja alat Cottrell adalah dengan cara...", options: ["elektroforesis", "dialisis", "adsorpsi", "efek Tyndall", "elektrolisis"], answer: "A" },
+            { id: 68, question: "Sistem koloid yang mempunyai muatan negatif terdapat pada..........", options: ["Fe(OH)₃", "AgCl", "Al(OH)₃", "FeCl₃", "As₂S₃"], answer: "E" },
+            { id: 69, question: "Terbentuknya delta di muara sungai disebabkan oleh..........", options: ["koagulasi koloid lumpur di tepi sungai oleh air laut", "lumpur sungai bergabung membentuk partikel yang lebih besar", "lumpur sungai mengadsorpsi kotoran-kotoran lumpur", "peristiwa elektroforesis partikel koloid lumpur", "peristiwa dialisis partikel koloid lumpur"], answer: "A" },
+            { id: 70, question: "Proses ini yang merupakan aplikasi dari sifat koagulasi pada koloid adalah..........", options: ["penjernihan minyak goreng dengan menambahkan arang aktif", "pengolahan air bersih dengan menambahkan tawas", "pengolahan es krim dengan menambahkan gelatin", "penambahan emulgator pada pembuatan emulsi antara minyak dan air", "pembentukan gel pada pertumbuhan selai"], answer: "B" },
+            { id: 71, question: "Partikel yang tidak dapat menembus kertas selofan yang bersifat semipermiabel adalah..........", options: ["larutan urea", "larutan urea", "larutan garam dapur", "asam asetat", "kanji"], answer: "E" },
+            { id: 72, question: "Yang tidak dapat membentuk koloid hidrofil bila didispersikan ke dalam air adalah..........", options: ["belerang", "selai nanas", "gelatin", "agar-agar", "kanji"], answer: "A" },
+            { id: 73, question: "Zat-zat berikut ini:\n1. lem kanji 3. emas\n2. Selai 4. Fe(OH)₃\nYang termasuk koloid adalah..........", options: ["1 dan 2", "1 dan 3", "2 dan 4", "3 dan 4", "1, 2, 3, dan 4"], answer: "E" },
+            { id: 74, question: "Larutan elektrolit yang paling baik untuk mengendapkan koloid sol As₂S₃ adalah..........", options: ["K₃PO₄", "MgSO₄", "NaNO₃", "FeSO₄", "Fe₂(SO₄)₃"], answer: "E" },
+            { id: 75, question: "Diketahui beberapa sistem koloid:\n1. Fe(OH)₃ 3. agar-agar\n2. sol belerang 4. Gelatin\nKoloid yang bersifat liofob adalah..........", options: ["3 dan 4", "2 dan 3", "1 dan 2", "1 dan 3", "1 dan 4"], answer: "C" },
+            { id: 76, question: "Sistem koloid yang dibuat dengan cara dispersi terdapat pada..........", options: ["larutan jenuh kalsium asetat dalam alkohol", "larutan FeCl₃ diteteskan ke dalam air mendidih", "larutan HCl ditambahkan ke dalam larutan Na₂S₂O₃", "gas H₂S dialirkan ke dalam larutan As₂O₃", "agar-agar dipeptisasikan ke dalam air panas"], answer: "E" },
+            { id: 77, question: "Kelompok senyawa di bawah ini semuanya emulsi, kecuali..........", options: ["santan dan minyak bumi", "susu dan lateks", "santan dan mayonaise", "krim kocok dan tinta tulis", "mayonaise dan minyak ikan"], answer: "D" },
+            { id: 78, question: "Salah satu sifat sol liofob adalah..........", options: ["reversibel", "viskositas tinggi", "efek Tyndall lebih jelas", "tidak menarik partikel medium cairnya", "sukar dikoagulasikan dengan penambahan"], answer: "D" },
+            { id: 79, question: "Proses cuci darah dapat dilakukan bagi penderita gagal ginjal, yang disebut..........", options: ["gerak Brown", "efek Tyndall", "elektroforesis", "dialisis", "elektrolisis"], answer: "D" },
+            { id: 80, question: "Pada pembuatan es krim digunakan.......... untuk mencegah pembentukan kristal.", options: ["susu", "santan", "telur", "kanji", "gelatin"], answer: "E" },
+            { id: 81, question: "Berikut ini adalah beberapa koloid:\n1. air berlumpur\n2. sol emas\n3. sol belerang\n4. Sol Fe(OH)₃\nYang merupakan koloid positif adalah..........", options: ["1 dan 2", "2 dan 4", "1, 3, dan 4", "2, 4, dan 5", "2, 3, dan 5"], answer: "B" },
+            { id: 82, question: "Dengan konsentrasi yang sama, larutan elektrolit yang paling efektif untuk menggumpalkan koloid lumpur yaitu..........", options: ["Al₂(SO₄)₃", "Na₂SO₄", "Ba(NO₃)₂", "KBr", "MgCl₂"], answer: "A" },
+            { id: 83, question: "Pemberian klorit atau kaporit proses pengolahan air minum bertujuan untuk..........", options: ["menghilangkan bahan-bahan yang menyebabkan pencemaran air", "mengendapkan batu segar pada air", "mengendapkan partikel koloid dalam air", "menghilangkan bau dari kaporit", "membunuh kuman yang berbahaya dalam air"], answer: "E" },
+            { id: 84, question: "Pemberian kapur tohor pada proses pengolahan air minum bertujuan untuk..........", options: ["terjadi koagulasi yang lebih cepat", "mengendapkan partikel koloid dalam air", "menghilangkan bau dari kaporit", "menaikkan pH air sehingga menjadi air", "membunuh kuman air sehingga menjadi air"], answer: "D" },
+            { id: 85, question: "Pembuatan koloid dapat dilakukan dengan cara menambahkan:\n1. larutan FeCl₃ ke dalam air panas\n2. agar-agar dipeptisasi oleh air\n3. larutan As₂O₃ ke dalam larutan H₂\n4. campuran belerang dan gula pasir halus ke dalam air\nProses yang menunjukkan pembuatan koloid dengan cara dispersi adalah..........", options: ["1 dan 2", "1 dan 3", "2 dan 3", "1 dan 4", "2 dan 4"], answer: "E" }
+        ];
+
+        let questions = [];
+        let currentIdx = 0;
+        let answers = {};
+        let doubts = {};
+        let timeLeft = 5400;
+        let timerInterval;
+        let isFinished = false;
+
+        function escapeHTML(str) {
+            if (!str) return "";
+            const map = { '&': '&', '<': '<', '>': '>', '"': '"', "'": '&#039;' };
+            return String(str).replace(/[&<>"']/g, m => map[m]);
+        }
+
+        function shuffle(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function shuffleQuestionsAndOptions() {
+            questions = shuffle(MASTER_DATA);
+            questions.forEach(q => {
+                if (q.options && q.options.length > 0 && q.answer) {
+                    const correctIndex = q.answer.charCodeAt(0) - 65;
+                    if (correctIndex >= 0 && correctIndex < q.options.length) {
+                        const correctText = q.options[correctIndex];
+                        q.options = shuffle(q.options);
+                        const newIdx = q.options.indexOf(correctText);
+                        q.answer = newIdx !== -1 ? String.fromCharCode(65 + newIdx) : q.answer;
+                    }
+                }
+            });
+        }
+
+        function hideLoader() {
+            const loader = document.getElementById('loader');
+            if (loader && !loader.classList.contains('hidden')) {
+                loader.classList.add('opacity-0', 'pointer-events-none');
+                setTimeout(() => loader.remove(), 300);
+            }        }
+
+        function init() {
+            try {
+                shuffleQuestionsAndOptions();
+                renderSidebar();
+                updateQuestion();
+                startTimer();
+                if (window.lucide && typeof lucide.createIcons === 'function') lucide.createIcons();
+            } catch (err) {
+                console.error("Init Error:", err);
+                document.getElementById('loader').innerHTML = `<div class="text-center"><p class="text-rose-600 font-bold mb-2">⚠️ Error</p><p class="text-xs text-slate-500 mb-4">${err.message}</p><button onclick="location.reload()" class="px-4 py-2 bg-indigo-600 text-white rounded-lg text-xs font-bold">Reload</button></div>`;
+            } finally {
+                setTimeout(hideLoader, 2000);
+            }
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (isFinished) return;
+                timeLeft--;
+                if (timeLeft <= 0) { clearInterval(timerInterval); finishExam(); return; }
+                const h = Math.floor(timeLeft / 3600);
+                const m = Math.floor((timeLeft % 3600) / 60);
+                const s = timeLeft % 60;
+                const el = document.getElementById('timer-display');
+                if (el) el.textContent = `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+            }, 1000);
+        }
+
+        function updateQuestion() {
+            const q = questions[currentIdx];
+            if (!q) return;
+
+            const qNum = document.getElementById('q-number-tag');
+            if (qNum) qNum.textContent = `SOAL ${currentIdx + 1}`;
+
+            const qText = document.getElementById('q-text');
+            if (qText) qText.innerHTML = escapeHTML(q.question);
+
+            const codeCont = document.getElementById('q-code-container');
+            const codeEl = document.getElementById('q-code');
+            if (q.code) {
+                codeCont?.classList.remove('hidden');
+                if (codeEl) codeEl.textContent = q.code;
+            } else {
+                codeCont?.classList.add('hidden');
+            }
+
+            const sub = document.getElementById('q-sub');            if (q.subQuestion) {
+                sub?.classList.remove('hidden');
+                const subP = sub?.querySelector('p');
+                if (subP) subP.innerHTML = escapeHTML(q.subQuestion);
+            } else {
+                sub?.classList.add('hidden');
+            }
+
+            const grid = document.getElementById('options-grid');
+            if (grid) {
+                grid.innerHTML = '';
+                q.options.forEach((opt, i) => {
+                    const char = String.fromCharCode(65 + i);
+                    const isSel = answers[currentIdx] === char;
+                    const isCorr = q.answer === char;
+                    let c = "w-full option-card p-4 rounded-2xl border-2 transition-all cursor-pointer ";
+                    let ic = "w-8 h-8 shrink-0 rounded-xl flex items-center justify-center font-black text-xs ";
+
+                    if (isFinished) {
+                        if (isCorr) { c += "border-emerald-500 bg-emerald-50 text-emerald-900"; ic += "bg-emerald-500 text-white"; }
+                        else if (isSel && !isCorr) { c += "border-rose-500 bg-rose-50 text-rose-900"; ic += "bg-rose-500 text-white"; }
+                        else { c += "border-slate-100 bg-white opacity-60 cursor-not-allowed"; ic += "bg-slate-100 text-slate-400"; }
+                    } else {
+                        if (isSel) { c += "border-indigo-600 bg-indigo-50/50 text-indigo-900 shadow-sm"; ic += "bg-indigo-600 text-white shadow-md"; }
+                        else { c += "border-slate-100 bg-white hover:border-slate-300 hover:bg-slate-50"; ic += "bg-slate-100 text-slate-400"; }
+                    }
+
+                    const btn = document.createElement('button');
+                    btn.className = c; btn.disabled = isFinished;
+                    btn.onclick = () => !isFinished && selectOption(char);
+                    btn.innerHTML = `<div class="${ic}">${char}</div><span class="option-text text-sm font-bold">${escapeHTML(opt)}</span>`;
+                    grid.appendChild(btn);
+                });
+            }
+
+            const badge = document.getElementById('correction-badge');
+            if (badge) {
+                if (isFinished) {
+                    badge.classList.remove('hidden');
+                    const u = answers[currentIdx];
+                    badge.textContent = u === q.answer ? "BENAR" : (u ? "SALAH" : "KOSONG");
+                    badge.className = `px-3 py-1 rounded-lg text-[10px] font-black uppercase tracking-wider ${u === q.answer ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`;
+                } else badge.classList.add('hidden');
+            }
+
+            document.getElementById('btn-prev').disabled = currentIdx === 0;
+            if (currentIdx === questions.length - 1) {
+                document.getElementById('btn-next')?.classList.add('hidden');
+                if (!isFinished) document.getElementById('btn-finish')?.classList.remove('hidden');
+            } else {                document.getElementById('btn-next')?.classList.remove('hidden');
+                document.getElementById('btn-finish')?.classList.add('hidden');
+            }
+
+            const btnDoubt = document.getElementById('btn-doubt');
+            const doubtText = document.getElementById('doubt-text');
+            if (btnDoubt && doubtText) {
+                btnDoubt.className = doubts[currentIdx] ? "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black border border-amber-500 bg-amber-500 text-white shadow-sm" : "flex items-center gap-2 px-3 py-1.5 rounded-lg text-[10px] font-black border border-slate-200 text-slate-400";
+                doubtText.textContent = doubts[currentIdx] ? "DITANDAI RAGU" : "RAGU-RAGU";
+            }
+
+            updateProgress();
+            renderSidebar();
+
+            try {
+                if (window.MathJax && typeof MathJax.typesetPromise === 'function') MathJax.typesetPromise().catch(() => {});
+            } catch(e) {}
+        }
+
+        function selectOption(char) { if (!isFinished) { answers[currentIdx] = char; updateQuestion(); } }
+        function toggleDoubt() { if (!isFinished) { doubts[currentIdx] = !doubts[currentIdx]; updateQuestion(); } }
+        function nextQ() { if (currentIdx < questions.length - 1) { currentIdx++; updateQuestion(); scrollToTop(); } }
+        function prevQ() { if (currentIdx > 0) { currentIdx--; updateQuestion(); scrollToTop(); } }
+        function jumpTo(idx) { currentIdx = idx; updateQuestion(); if (window.innerWidth < 1024) toggleSidebar(); scrollToTop(); }
+        function scrollToTop() { document.querySelector('main')?.scrollTo({ top: 0, behavior: 'smooth' }); }
+        function updateProgress() { const p = (Object.keys(answers).length / questions.length) * 100; const b = document.getElementById('top-progress'); if (b) b.style.width = `${p}%`; }
+
+        function renderSidebar() {
+            const grid = document.getElementById('grid-nav');
+            if (!grid) return;
+            grid.innerHTML = '';
+            questions.forEach((q, i) => {
+                const btn = document.createElement('button');
+                const isAns = answers[i] !== undefined, isDbt = doubts[i] === true, isAct = currentIdx === i;
+                let cls = "h-10 rounded-xl text-[10px] font-black transition-all border-2 focus:outline-none ";
+                if (isFinished) {
+                    if (answers[i] === q.answer) cls += "bg-emerald-500 border-emerald-500 text-white ";
+                    else if (answers[i]) cls += "bg-rose-500 border-rose-500 text-white ";
+                    else cls += "bg-slate-200 border-slate-200 text-slate-500 ";
+                } else {
+                    if (isAns && isDbt) cls += "bg-indigo-600 border-amber-500 text-white ";
+                    else if (isAns) cls += "bg-indigo-600 border-indigo-600 text-white ";
+                    else if (isDbt) cls += "bg-white border-amber-500 text-amber-500 ";
+                    else cls += "bg-white border-slate-200 text-slate-400 hover:border-slate-300 ";
+                }
+                if (isAct) cls += "ring-2 ring-indigo-400 ring-offset-1 ";
+                btn.className = cls; btn.textContent = i + 1; btn.onclick = () => jumpTo(i);
+                grid.appendChild(btn);
+            });
+        }
+        function toggleSidebar() {
+            document.getElementById('sidebar')?.classList.toggle('translate-x-full');
+            document.getElementById('overlay')?.classList.toggle('active');
+        }
+
+        function finishExam() {
+            if (isFinished) return;
+            clearInterval(timerInterval);
+            isFinished = true;
+            let correct = 0;
+            questions.forEach((q, i) => { if (answers[i] === q.answer) correct++; });
+            const finalScore = Math.round((correct / questions.length) * 100);
+            document.getElementById('final-score').textContent = finalScore;
+            document.getElementById('final-summary').textContent = `Menjawab ${correct} dari ${questions.length} soal dengan benar.`;
+            document.getElementById('modal-result')?.classList.remove('hidden');
+            document.getElementById('timer-box')?.classList.add('hidden');
+            document.getElementById('main-submit-btn')?.classList.add('hidden');
+            document.getElementById('btn-finish')?.classList.add('hidden');
+            updateQuestion();
+        }
+
+        function closeResult() { document.getElementById('modal-result')?.classList.add('hidden'); }
+
+        function safeInit() {
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+            else init();
+        }
+        safeInit();
+    </script>
+</body>
+</html>
